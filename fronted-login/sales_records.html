@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Sales Records</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+
+    h2 {
+      color: #333;
+    }
+
+    .filters {
+      margin-bottom: 16px;
+    }
+
+    input[type="text"],
+    input[type="date"] {
+      padding: 4px 8px;
+      margin-right: 10px;
+    }
+
+    button {
+      padding: 6px 14px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .btn-green {
+      background-color: #4CAF50;
+      color: white;
+    }
+
+    .btn-blue {
+      background-color: #2196F3;
+      color: white;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 12px;
+    }
+
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: center;
+    }
+
+    th {
+      background-color: #4CAF50;
+      color: white;
+    }
+
+    #summary {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h2>📈 Sales Records</h2>
+  <p>👤 Welcome, <span id="username"></span></p>
+
+  <div class="filters">
+    <label>Date Range:</label>
+    <input type="date" id="startDate"> ~ <input type="date" id="endDate">
+    <label>Drug Name:</label>
+    <input type="text" id="searchName">
+    <label>Manufacturer:</label>
+    <input type="text" id="manufacturerInput">
+    <button class="btn-green" onclick="searchLogs()">🔍 Search</button>
+    <button class="btn-blue" onclick="window.location.href='manager_dashboard.html'">⬅ Back</button>
+  </div>
+
+  <table id="salesLogTable">
+    <thead>
+      <tr>
+        <th>Drug Name</th>
+        <th>Manufacturer</th>
+        <th>Quantity</th>
+        <th>Price</th>
+        <th>Total</th>
+        <th>Sale Time</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <div id="summary">💊 0 items | 💰 $0.00</div>
+
+  <!-- 加载 username -->
+  <script>
+    document.getElementById("username").innerText = sessionStorage.getItem("username") || "";
+  </script>
+
+  <!-- 引入功能逻辑 -->
+  <script src="js/sales_record.js"></script>
+</body>
+</html>

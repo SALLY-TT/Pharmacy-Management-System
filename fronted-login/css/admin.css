@@ -1,0 +1,17 @@
+body {
+  font-family: Arial, sans-serif;
+  background: #fefefe;
+  padding: 20px;
+}
+h2 {
+  font-size: 28px;
+}
+.add-user-block {
+  margin-top: 10px;
+  padding: 10px;
+  border-top: 1px dashed #ccc;
+}
+.add-heading {
+  font-size: 18px;
+  margin-bottom: 6px;
+}

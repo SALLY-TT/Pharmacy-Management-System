@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Pharmacy System Main</title>
+</head>
+<body>
+  <script>
+    if (!sessionStorage.getItem("username")) {
+      window.location.href = "login.html";
+    }
+  </script>
+
+  <h2>Welcome to the Pharmacy Management System</h2>
+  <p id="welcome"></p>
+  <div id="buttons"></div>
+
+  <script>
+    const username = sessionStorage.getItem("username");
+    const role = sessionStorage.getItem("role");
+
+    document.getElementById("welcome").innerText = "Logged in as: " + username + " (" + role + ")";
+
+
+    const btns = {
+      admin: "<button onclick=\"window.location.href='admin.html'\">Manage Users</button>",
+      manager: "<button onclick=\"window.location.href='drugs.html'\">Manage Drugs</button>" +
+               "<button onclick=\"window.location.href='report.html'\">Sales Report</button>",
+      seller: "<button onclick=\"window.location.href='sales.html'\">Sell Drugs</button>" +
+      "<button onclick=\"window.location.href='report.html'\">Sales Report</button>"
+
+    };
+
+
+    if (role in btns) {
+      document.getElementById("buttons").innerHTML = btns[role];
+    } else {
+      document.getElementById("buttons").innerText = "No role-based functionality available.";
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Drug Management</title>
+  <style>
+    body {
+      font-family: "Segoe UI", sans-serif;
+      margin: 40px;
+      background-color: #f9f9f9;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    th, td {
+      padding: 10px 12px;
+      border: 1px solid #ddd;
+      text-align: center;
+    }
+
+    th {
+      background-color: #4CAF50;
+      color: white;
+    }
+    h2 {
+      color: #333;
+      border-left: 5px solid #4CAF50;
+      padding-left: 10px;
+    }
+
+    input {
+      padding: 5px;
+      margin: 5px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+    
+    td input[type="number"] {
+      width: 70px;
+      padding: 4px;
+    }
+
+    .btn-green {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      margin: 2px;
+      transition: background-color 0.3s;
+    }
+
+    .btn-green:hover {
+      background-color: #45a049;
+    }
+
+    .btn-blue {
+      background-color: #2196F3;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      margin: 2px;
+      transition: background-color 0.3s;
+    }
+
+    .btn-blue:hover {
+      background-color: #1976D2;
+    }
+
+    #pagination button {
+      margin: 3px;
+    }
+
+  </style>
+</head>
+<body>
+  <h2>💊 Drug Management</h2>
+  <p id="welcome"></p>
+
+  <div>
+    <input type="text" id="searchNameInput" placeholder="Search by name...">
+    <input type="text" id="searchManufacturerInput" placeholder="Search by manufacturer...">
+    <select id="sortBy">
+      <option value="">Sort by</option>
+      <option value="total_sold_desc">Total Sales ↓</option>
+      <option value="total_sold_asc">Total Sales ↑</option>
+      <option value="sold_since_restock_desc">Sales Since Restock ↓</option>
+      <option value="sold_since_restock_asc">Sales Since Restock ↑</option>
+    </select>
+    <button onclick="searchDrugs()">Search</button>
+  </div>
+
+  <table border="1" id="drugTable">
+    <thead>
+      <tr>
+        <th>ID</th><th>Name</th><th>Manufacturer</th><th>Price</th><th>Stock</th><th>Code</th><th>Total Sales</th><th>Sold Since Restock</th><th>Last Updated</th><th>Updated By</th><th>Actions</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <div id="pagination"></div>
+
+  <h3>Add Drug</h3>
+  <form id="addDrugForm">
+    <input placeholder="Name" id="name" required>
+    <input placeholder="Manufacturer" id="manufacturer">
+    <input placeholder="Price" id="price" type="number" step="0.01" required>
+    <input placeholder="Stock" id="stock" type="number" required>
+    <input placeholder="Code" id="code">
+    <button type="submit" class="btn-blue">Add Drug</button>
+  </form>
+  <p id="message"></p>
+
+  <script src="js/drugs.js"></script>
+</body>
+</html>

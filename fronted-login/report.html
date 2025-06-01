@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Sales Report</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+  <style>
+    body {
+      font-family: "Segoe UI", sans-serif;
+      margin: 40px;
+      background-color: #f9f9f9;
+    }
+    h2 {
+      color: #333;
+      border-left: 5px solid #70a972;
+      padding-left: 10px;
+    }
+    #username {
+      font-size: 1rem;
+      color: #555;
+      margin-bottom: 10px;
+    }
+    .filters {
+      margin: 15px 0;
+    }
+    .filters input {
+      margin-right: 10px;
+      padding: 5px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    th, td {
+      padding: 10px 12px;
+      border: 1px solid #ddd;
+      text-align: center;
+    }
+    th {
+      background-color: #4CAF50;
+      color: white;
+    }
+    #total {
+      margin-top: 15px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      color: #333;
+    }
+    #pagination {
+      margin-top: 10px;
+    }
+    #pagination button {
+      margin: 2px;
+      padding: 5px 10px;
+    }
+    #chartContainer {
+      margin-top: 30px;
+      background: white;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+  </style>
+</head>
+<body>
+  <h2 id="title">📊 Sales Records</h2>
+  
+  <div class="filters">
+    <label style="margin-right:8px; font-weight:500;">Filter by name:</label>
+    <input type="text" id="searchInput" placeholder="e.g. amoxicillin" style="margin-right:12px; padding:5px;">
+    <br><br>
+    <label style="margin-right:8px; font-weight:500;">Filter by date range:</label>
+    <label style="margin-right:5px;">From <input type="date" id="startDate" style="margin-right:10px;"></label>
+    <label style="margin-right:5px;">To <input type="date" id="endDate"></label>
+    <br><br>
+    <button onclick="applyDateFilter()" style="padding:6px 12px; background-color:#4CAF50; color:white; border:none; border-radius:5px; cursor:pointer; margin-right:10px;">Apply Filter</button>
+    <button onclick="exportToExcel()" style="padding:6px 12px; background-color:#2196F3; color:white; border:none; border-radius:5px; cursor:pointer;">Export to Excel</button>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Drug ID</th>
+        <th>Drug Name</th>
+        <th>Drug Manufacturer</th>
+        <th>Quantity</th>
+        <th>Price</th>
+        <th>Sale Time</th>
+      </tr>
+    </thead>
+    <tbody id="reportTable"></tbody>
+  </table>
+
+  <div id="pagination"></div>
+  <p id="total"></p>
+
+  <div id="chartContainer">
+    <canvas id="salesChart"></canvas>
+  </div>
+
+  <script>
+    const username = sessionStorage.getItem("username");
+    document.getElementById("title").innerText = `📊 ${username}'s Sales Records`;
+
+    let salesData = [], filteredData = [];
+    let currentPage = 1;
+    const perPage = 12;
+
+    function renderTablePage(page, data = filteredData) {
+      const tbody = document.getElementById("reportTable");
+      const start = (page - 1) * perPage;
+      const paginated = data.slice(start, start + perPage);
+      tbody.innerHTML = paginated.map(sale => `
+        <tr>
+          <td>${sale.drug_id}</td>
+          <td>${sale.drug_name}</td>
+          <td>${sale.drug_manufacturer}</td>
+          <td>${sale.quantity}</td>
+          <td>${sale.price}</td>
+          <td>${sale.sale_time}</td>
+        </tr>
+      `).join("");
+    }
+
+    function renderPagination(data = filteredData) {
+      const pageCount = Math.ceil(data.length / perPage);
+      const pagination = document.getElementById("pagination");
+      pagination.innerHTML = "";
+      for (let i = 1; i <= pageCount; i++) {
+        const btn = document.createElement("button");
+        btn.innerText = i;
+        btn.disabled = (i === currentPage);
+        btn.onclick = () => {
+          currentPage = i;
+          renderTablePage(currentPage, data);
+          renderPagination(data);
+        };
+        pagination.appendChild(btn);
+      }
+    }
+
+    function renderChart(username, data = filteredData) {
+      const ctx = document.getElementById("salesChart").getContext("2d");
+      const drugStats = {};
+      for (const s of data) {
+        drugStats[s.drug_name] = (drugStats[s.drug_name] || 0) + s.quantity;
+      }
+      const colors = ["#A8E6CF", "#DCEDC1", "#FFD3B6", "#FFAAA5", "#DCE775", "#C5E1A5", "#B2EBF2"];
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: Object.keys(drugStats),
+          datasets: [{
+            label: "Quantity Sold",
+            data: Object.values(drugStats),
+            backgroundColor: Object.keys(drugStats).map((_, i) => colors[i % colors.length])
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            title: {
+              display: true,
+              text: `${username}'s Sales Chart`,
+              font: { size: 18, weight: "bold" }
+            },
+            legend: { display: false }
+          },
+          scales: {
+            y: { beginAtZero: true, title: { display: true, text: "Quantity" } },
+            x: { title: { display: true, text: "Drug Name" } }
+          }
+        }
+      });
+    }
+
+    function applyFilters() {
+      const keyword = document.getElementById("searchInput").value.trim().toLowerCase();
+      const start = new Date(document.getElementById("startDate").value);
+      const end = new Date(document.getElementById("endDate").value);
+
+      filteredData = salesData.filter(sale => {
+        const matchesKeyword = sale.drug_name.toLowerCase().includes(keyword);
+        const saleDate = new Date(sale.sale_time);
+        const endOfDay = new Date(end); endOfDay.setHours(23, 59, 59, 999);
+        const inRange = (!isNaN(start) ? saleDate >= start : true) && (!isNaN(end) ? saleDate <= endOfDay : true);
+        return matchesKeyword && inRange;
+      });
+
+      currentPage = 1;
+      renderTablePage(currentPage);
+      renderPagination();
+      renderChart(username);
+    }
+
+    function applyDateFilter() { applyFilters(); }
+
+    function exportToExcel() {
+      const exportData = filteredData.map(row => ({
+        "Drug Name": row.drug_name,
+        "Quantity": row.quantity,
+        "Price": row.price,
+        "Sale Time": new Date(row.sale_time).toLocaleString()
+      }));
+      const ws = XLSX.utils.json_to_sheet(exportData);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Sales Report");
+      const wbout = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+      saveAs(new Blob([wbout], { type: "application/octet-stream" }), "sales_report.xlsx");
+    }
+
+    document.getElementById("searchInput").addEventListener("input", applyFilters);
+
+    fetch(`http://127.0.0.1:5000/sales/report?username=${username}`)
+      .then(res => res.json())
+      .then(data => {
+        salesData = filteredData = data.sales || [];
+        const totalQuantity = data.sales.reduce((sum, item) => sum + item.quantity, 0);
+        document.getElementById("total").innerText = `💰 Total Sales Amount: $${data.total_sales}   🧾 Total Quantity Sold: ${totalQuantity} items`;
+        renderTablePage(currentPage);
+        renderPagination();
+        renderChart(username);
+      })
+      .catch(err => {
+        document.getElementById("total").innerText = "Failed to load: " + err;
+      });
+  </script>
+</body>
+</html>

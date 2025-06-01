@@ -1,0 +1,102 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Seller Sales Page</title>
+  <style>
+    body {
+      font-family: "Segoe UI", sans-serif;
+      margin: 40px;
+      background-color: #f8f8f8;
+    }
+    h2, h3 {
+      color: #222;
+      border-left: 5px solid #4CAF50;
+      padding-left: 10px;
+    }
+    input[type=text], input[type=number] {
+      padding: 6px;
+      margin: 10px 0;
+      width: 250px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: white;
+      margin-bottom: 20px;
+    }
+    th, td {
+      padding: 4px;
+      border: 1px solid #ccc;
+      text-align: center;
+    }
+    th {
+      background-color: #62c165;
+      color: white;
+    }
+    button {
+      padding: 6px 12px;
+      background-color: #62c165;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .clear-btn {
+      background-color: #4a6da3; 
+      color: white;
+      margin-left: 10px;
+    }
+
+    .clear-btn:hover {
+      background-color: #4a6da3;
+    }
+
+    #cartContainer {
+      background-color: #eef;
+      padding: 20px;
+      border-radius: 8px;
+    }
+    #pagination button {
+      margin: 2px;
+      padding: 5px 10px;
+    }
+  </style>
+</head>
+<body>
+  <h2>📦 Drug Inventory</h2>
+  <input type="text" id="searchNameInput" placeholder="Search drug name...">
+  <input type="text" id="searchManufacturerInput" placeholder="Search manufacturer...">
+  <select id="sortBy">
+    <option value="">Sort by</option>
+    <option value="price-asc">Price ↑</option>
+    <option value="price-desc">Price ↓</option>
+    <option value="stock-asc">Stock ↑</option>
+    <option value="stock-desc">Stock ↓</option>
+  </select>
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th><th>Name</th><th>Manufacturer</th><th>Price</th><th>Stock</th><th>Code</th><th>Action</th>
+      </tr>
+    </thead>
+    <tbody id="drugTable"></tbody>
+  </table>
+  <div id="pagination"></div>
+  <div id="cartContainer">
+    <h3>🛒 Shopping Cart</h3>
+    <table id="cartTable">
+      <thead>
+        <tr>
+          <th>Drug Name</th><th>Quantity</th><th>Adjust</th><th>Remove</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <button onclick="clearCart()" class="clear-btn">Clear Cart</button>
+    <button onclick="submitOrder()">Submit</button>
+  </div>
+  <script src="js/sales.js"></script>
+</body>
+</html>

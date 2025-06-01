@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Manager Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+  button {
+    padding: 10px 16px;
+    margin-right: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+
+  button:hover {
+    background-color: #45a049;
+  }
+</style>
+</head>
+<body>
+  <h2>💊 Manager Dashboard</h2>
+  <p>Welcome, <span id="username"></span></p>
+
+  <button onclick="location.href='drugs.html'">🧾 Manage Drugs</button>
+  <button onclick="location.href='sales_records.html'">📈 View Sales Records</button>
+  <button onclick="location.href='operation_logs.html'">🪪 View Operation Logs</button>
+
+  <script>
+    document.getElementById("username").innerText = sessionStorage.getItem("username") || "";
+  </script>
+</body>
+</html>
