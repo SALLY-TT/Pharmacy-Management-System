@@ -24,6 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
           <td>${sale.drug_manufacturer}</td>
           <td>${sale.quantity}</td>
           <td>${sale.price}</td>
+          <td>¥${sale.total_price}</td>
           <td>${sale.sale_time}</td>
         </tr>
       `).join("");

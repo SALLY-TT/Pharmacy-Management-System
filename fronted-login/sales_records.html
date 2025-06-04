@@ -62,6 +62,17 @@
       margin-top: 10px;
       font-weight: bold;
     }
+
+    #pagination {
+      margin-top: 12px;
+    }
+
+    #pagination button {
+      margin-right: 4px;
+      padding: 4px 10px;
+      background-color: #62c165;
+      color: white;
+    }
   </style>
 </head>
 <body>
@@ -93,14 +104,12 @@
     <tbody></tbody>
   </table>
 
-  <div id="summary">💊 0 items | 💰 $0.00</div>
+  <div id="pagination"></div>
+  <div id="summary">💊 0 items | 💰 ¥0.00</div>
 
-  <!-- 加载 username -->
   <script>
     document.getElementById("username").innerText = sessionStorage.getItem("username") || "";
   </script>
-
-  <!-- 引入功能逻辑 -->
   <script src="js/sales_record.js"></script>
 </body>
 </html>

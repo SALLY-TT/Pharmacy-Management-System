@@ -3,34 +3,96 @@
 <head>
   <meta charset="UTF-8">
   <title>Pharmacy System Main</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f3f5f8;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 400px;
+      background: rgb(213, 230, 215);
+      padding: 40px;
+      border-radius: 16px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+      width: 420px;
+      text-align: center;
+    }
+
+    h2 {
+      margin-bottom: 10px;
+      font-size: 28px;
+    }
+
+    #welcome {
+      font-size: 18px;
+      margin-bottom: 30px;
+      overflow: hidden;
+      white-space: nowrap;
+      border-right: 2px solid;
+      animation: typing 2.5s steps(40, end), blink 0.75s step-end infinite;
+    }
+
+    @keyframes typing {
+      from { width: 0 }
+      to { width: 100% }
+    }
+
+    @keyframes blink {
+      50% { border-color: transparent }
+    }
+
+    button {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      margin: 10px auto;
+      font-size: 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+  </style>
 </head>
 <body>
+  <div class="container">
+    <h2>🏥 Pharmacy Selling System</h2>
+    <p id="welcome"></p>
+    <div id="buttons"></div>
+  </div>
+
   <script>
     if (!sessionStorage.getItem("username")) {
       window.location.href = "login.html";
     }
-  </script>
 
-  <h2>Welcome to the Pharmacy Management System</h2>
-  <p id="welcome"></p>
-  <div id="buttons"></div>
-
-  <script>
     const username = sessionStorage.getItem("username");
     const role = sessionStorage.getItem("role");
 
-    document.getElementById("welcome").innerText = "Logged in as: " + username + " (" + role + ")";
-
+    document.getElementById("welcome").innerText = `👤 Logged in as: ${username} (${role})`;
 
     const btns = {
-      admin: "<button onclick=\"window.location.href='admin.html'\">Manage Users</button>",
-      manager: "<button onclick=\"window.location.href='drugs.html'\">Manage Drugs</button>" +
-               "<button onclick=\"window.location.href='report.html'\">Sales Report</button>",
-      seller: "<button onclick=\"window.location.href='sales.html'\">Sell Drugs</button>" +
-      "<button onclick=\"window.location.href='report.html'\">Sales Report</button>"
-
+      admin: `
+        <button onclick="location.href='admin.html'">👥 Manage Users</button>`,
+      manager: `
+        <button onclick="location.href='drugs.html'">📋 Manage Drugs</button>
+        <button onclick="location.href='report.html'">📈 Sales Report</button>`,
+      seller: `
+        <button onclick="location.href='sales.html'">💊 Sell Drugs</button>
+        <button onclick="location.href='report.html'">📊 Sales Report</button>`
     };
-
 
     if (role in btns) {
       document.getElementById("buttons").innerHTML = btns[role];

@@ -8,9 +8,10 @@ from routes.report import report_bp
 from werkzeug.security import check_password_hash
 
 app = Flask(__name__)
+CORS(app)  # 允许所有源访问（开发阶段安全）
 
 #  正确配置 CORS：允许来自 5500 端口的前端访问
-CORS(app, resources={r"/*": {"origins": "http://127.0.0.1:5500"}})
+CORS(app, resources={r"/*": {"origins": "http://127.0.0.1:5500"}}) # 允许所有源访问（开发阶段安全 后面需要留意）
 
 #  注册蓝图
 app.register_blueprint(drugs_bp)

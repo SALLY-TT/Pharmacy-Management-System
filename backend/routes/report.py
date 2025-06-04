@@ -25,6 +25,7 @@ def sales_report():
             d.manufacturer AS drug_manufacturer,
             s.quantity,
             d.price,
+            (d.price * s.quantity) AS total_price, 
             s.sale_time
         FROM sales s
         JOIN drugs d ON s.drug_id = d.drug_id

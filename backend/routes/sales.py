@@ -70,11 +70,16 @@ def sell_drug():
             # 插入日志记录
             cursor.execute("""
                 INSERT INTO sales_log 
-                (drug_id, drug_name, manufacturer, price, quantity, total_price, sale_time)
-                SELECT d.drug_id, d.name, d.manufacturer, d.price, %s, %s, %s
-                FROM drugs d WHERE d.drug_id = %s
-            """, (quantity, total_price, sale_time, drug_id))
-
+                (drug_id, drug_name, manufacturer, price, quantity, sale_time)
+                VALUES (%s, %s, %s, %s, %s, %s)
+            """, (
+                drug["drug_id"],
+                drug["name"],
+                drug["manufacturer"],
+                drug["price"],
+                quantity,
+                sale_time
+            ))
 
 
         conn.commit()
@@ -95,34 +100,66 @@ def sell_drug():
 # 查询销售日志接口
 @sales_bp.route("/sales/logs", methods=["GET"])
 def get_sales_logs():
+    # 获取前端传来的查询参数
     name = request.args.get("name", "")
     manufacturer = request.args.get("manufacturer", "")
     start = request.args.get("start_date", "")
     end = request.args.get("end_date", "")
+    page = int(request.args.get("page", 1))
+    limit = int(request.args.get("limit", 8))
+    offset = (page - 1) * limit
 
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
 
-    query = "SELECT * FROM sales_log WHERE 1=1"
+    # 构建基础 SQL 查询语句（WHERE 1=1 方便追加条件）
+    base_condition = "FROM sales_log WHERE 1=1"
+    filters = []
     params = []
 
-    #在sql里面新增筛选条件
+    # 模糊搜索药品名称（不区分大小写）
     if name:
-        query += " AND LOWER(drug_name) LIKE %s"
-        params.append(f"%{name.lower()}%")      #%{name}% 表示模糊查询
+        filters.append("AND LOWER(drug_name) LIKE %s")
+        params.append(f"%{name.lower()}%")
+
+    # 模糊搜索厂家（不区分大小写）
     if manufacturer:
-        query += " AND LOWER(manufacturer) LIKE %s"
+        filters.append("AND LOWER(manufacturer) LIKE %s")
         params.append(f"%{manufacturer.lower()}%")
+
+    # 起始日期（包含当天）
     if start:
-        query += " AND sale_time >= %s"
+        filters.append("AND DATE(sale_time) >= %s")
         params.append(start)
+
+    # 截止日期（包含当天）
     if end:
-        query += " AND sale_time <= %s"
+        filters.append("AND DATE(sale_time) <= %s")
         params.append(end)
 
-    cursor.execute(query, tuple(params))
+    filter_clause = " ".join(filters)
+
+    # 1. 获取分页数据（默认按销售时间倒序）
+    data_query = f"SELECT * {base_condition} {filter_clause} ORDER BY sale_time DESC LIMIT %s OFFSET %s"
+    cursor.execute(data_query, (*params, limit, offset))
     logs = cursor.fetchall()
+
+    # 2. 获取总记录数（用于计算总页数）
+    count_query = f"SELECT COUNT(*) as total {base_condition} {filter_clause}"
+    cursor.execute(count_query, tuple(params))
+    total = cursor.fetchone()["total"]
+
+    # 3. 获取总销量与总金额（用于底部统计）
+    stats_query = f"SELECT SUM(quantity) as total_items, SUM(total_price) as total_amount {base_condition} {filter_clause}"
+    cursor.execute(stats_query, tuple(params))
+    stats = cursor.fetchone()
+
     cursor.close()
     conn.close()
 
-    return jsonify(logs)
+    return jsonify({
+        "logs": logs,
+        "total": total,
+        "total_pages": (total + limit - 1) // limit,
+        "stats": stats
+    })

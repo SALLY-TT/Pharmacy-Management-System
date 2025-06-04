@@ -1,35 +1,96 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>Manager Dashboard</title>
-  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
-  button {
-    padding: 10px 16px;
-    margin-right: 10px;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-  }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f3f5f8;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
 
-  button:hover {
-    background-color: #45a049;
-  }
-</style>
+    .container {
+      background: #e4f4e9;
+      padding: 50px 40px;
+      border-radius: 16px;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+      width: 500px;
+      text-align: center;
+      animation: fadeIn 0.5s ease-in-out;
+    }
+
+    h1 {
+      font-size: 28px;
+      margin-bottom: 10px;
+      text-shadow: 1px 1px 1px rgba(0,0,0,0.08);
+    }
+
+    #welcome {
+      font-size: 18px;
+      margin-bottom: 35px;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      margin: 12px 0;
+      font-size: 16px;
+      font-weight: 500;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    button:hover {
+      background-color: #45a049;
+      transform: scale(1.03);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .icon {
+      margin-right: 6px;
+    }
+    .slide-in {
+      opacity: 0;
+      transform: translateX(-30px);
+      animation: slideIn 1.5s ease-out forwards;
+    }
+
+    @keyframes slideIn {
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+  </style>
 </head>
 <body>
-  <h2>💊 Manager Dashboard</h2>
-  <p>Welcome, <span id="username"></span></p>
-
-  <button onclick="location.href='drugs.html'">🧾 Manage Drugs</button>
-  <button onclick="location.href='sales_records.html'">📈 View Sales Records</button>
-  <button onclick="location.href='operation_logs.html'">🪪 View Operation Logs</button>
+  <div class="container">
+    <h1>💊 Manager Dashboard</h1>
+    <p class="slide-in">👤 Welcome, <span id="username"></span></p>
+    <button onclick="location.href='drugs.html'">📋 Manage Drugs</button>
+    <button onclick="location.href='sales_records.html'">📈 View Sales Records</button>
+    <button onclick="location.href='operation_log.html'">📑 View Operation Logs</button>
+  </div>
 
   <script>
-    document.getElementById("username").innerText = sessionStorage.getItem("username") || "";
+    const username = sessionStorage.getItem("username") || "manager1";
+    document.getElementById("username").innerText = username;
   </script>
 </body>
 </html>

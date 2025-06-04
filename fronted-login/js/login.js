@@ -19,9 +19,8 @@ document.getElementById("loginForm").addEventListener("submit", function(e) {
           window.location.href = "admin.html";
         } else if (data.role === "manager") {
           window.location.href = "manager_dashboard.html";
-        } else if (data.role === "seller") {
-          window.location.href = "sales.html";
-        } else {
+        } 
+        else {
           // 默认跳转 fallback
           window.location.href = "main.html";
         }
