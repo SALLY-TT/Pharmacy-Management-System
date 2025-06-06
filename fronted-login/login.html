@@ -17,6 +17,13 @@
 
       <button type="submit">Login</button>
     </form>
+    <!-- 添加证书上传区域（默认隐藏） -->
+    <div id="certSection" style="display:none;">
+      <h3>Admin Certificate Required</h3>
+      <input type="file" id="certFile" accept=".pem,.crt">
+      <button id="verifyCertBtn">Verify Certificate</button>
+      <p id="certMessage" style="color: red;"></p>
+    </div>
     <p id="message" style="color: red;"></p>
   </div>
 

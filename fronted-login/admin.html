@@ -6,11 +6,44 @@
   <link rel="stylesheet" href="css/admin.css">
 </head>
 <body>
-  <h2>User Management Page (Admin Only)</h2>
-  <p id="welcome"></p>
-  <p id="userStats"></p>
-  <div id="userTables"></div>
-  <p id="message" style="color: red;"></p>
+  <div id="accessDenied" style="display:none;">
+    <h2>Access Denied</h2>
+    <p>Admin certificate verification required.</p>
+  </div>
+
+  <div id="content" style="display:none;">
+    <h2>User Management Page (Admin Only)</h2>
+    <p id="welcome"></p>
+    <p id="userStats"></p>
+    <div id="userTables"></div>
+    <p id="message" style="color: red;"></p>
+  </div>
+
+  <script>
+    // 检查证书验证状态
+    document.addEventListener("DOMContentLoaded", () => {
+      const role = sessionStorage.getItem("role");
+      const certVerified = sessionStorage.getItem("cert_verified") === "true";
+
+      // 管理员需要证书验证
+      if (role === "admin") {
+        if (certVerified) {
+          document.getElementById("content").style.display = "block";
+        } else {
+          document.getElementById("accessDenied").style.display = "block";
+        }
+      }
+      // 非管理员用户不应该访问此页面
+      else {
+        document.getElementById("accessDenied").style.display = "block";
+        document.getElementById("accessDenied").innerHTML = `
+          <h2>Access Denied</h2>
+          <p>Admin role required. Current role: ${role || 'none'}</p>
+        `;
+      }
+    });
+  </script>
+
   <script src="js/admin.js"></script>
 </body>
 </html>
